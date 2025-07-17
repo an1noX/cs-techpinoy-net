@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  cs13web:
+    image: jnonymous420/cs13web:latest   # 🔁 Use your Docker Hub image here
+    ports:
+      - "8081:3000"                     # Assuming app inside container uses port 3000
+    container_name: cs13web
