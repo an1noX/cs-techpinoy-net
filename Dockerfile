@@ -31,7 +31,7 @@ WORKDIR /app
 COPY --from=build /app/dist ./dist
 
 # Expose the port used by 'serve'
-EXPOSE 8082
+EXPOSE 8083
 
 # Start the app
-CMD ["serve", "-s", "dist", "-l", "8082"]
+CMD ["serve", "-s", "dist", "-l", "8083"]

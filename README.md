@@ -1,73 +1,161 @@
-# Welcome to your Lovable project
+# CS TechPinoy Net
 
-## Project info
+A modern web portal for Counter-Strike 1.3 servers and community, featuring live stats, downloads, and guides.
 
-**URL**: https://lovable.dev/projects/a74df99e-d42e-478c-924f-893c9bb0415f
+---
 
-## How can I edit this code?
+## Project Info
 
-There are several ways of editing your application.
+**GitHub Repo:** [https://github.com/an1noX/cs-techpinoy-net](https://github.com/an1noX/cs-techpinoy-net)
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a74df99e-d42e-478c-924f-893c9bb0415f) and start prompting.
+## How to Edit and Develop
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### 1. Clone the Repository
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Clone the repository
+git clone https://github.com/an1noX/cs-techpinoy-net.git
+cd cs-techpinoy-net
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### 2. Install Dependencies
 
-# Step 3: Install the necessary dependencies.
-npm i
+Requires Node.js (v18+) and npm.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```sh
+npm install
+```
+
+### 3. Available Scripts
+
+- `npm run dev` – Start the development server (Vite, hot reload)
+- `npm run build` – Build for production
+- `npm run preview` – Preview the production build locally
+- `npm run lint` – Lint the codebase
+
+### 4. Start Development Server
+
+```sh
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be available at [http://localhost:8080](http://localhost:8080) by default.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+---
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
+## Technologies Used
 
 - Vite
 - TypeScript
 - React
-- shadcn-ui
+- shadcn-ui (Radix UI components)
 - Tailwind CSS
+- React Router
+- TanStack React Query
+- ESLint
+- Docker (optional for deployment)
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/a74df99e-d42e-478c-924f-893c9bb0415f) and click on Share -> Publish.
+## Project Structure
 
-## Can I connect a custom domain to my Lovable project?
+```
+cs-techpinoy-net/
+├── public/           # Static assets (favicon, robots.txt, etc.)
+├── src/
+│   ├── components/   # React components (UI, modals, server list, etc.)
+│   ├── hooks/        # Custom React hooks
+│   ├── lib/          # Utility functions
+│   ├── pages/        # Page components (Index, NotFound)
+│   ├── App.tsx       # Main app component
+│   └── main.tsx      # Entry point
+├── Dockerfile        # Docker build instructions
+├── docker-compose.yml# Docker Compose config
+├── package.json      # Project metadata and scripts
+├── tailwind.config.ts# Tailwind CSS config
+└── ...
+```
 
-Yes, you can!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Deployment
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Local Build & Preview
+
+```sh
+npm run build
+npm run preview
+```
+
+### Docker (Local)
+
+```sh
+docker build -t cs-techpinoy-net .
+docker run -d -p 8080:8080 --name cs-techpinoy-net cs-techpinoy-net
+```
+
+### Docker Compose (Local)
+
+```yaml
+version: "3.8"
+services:
+  cs-techpinoy-net:
+    build: .
+    ports:
+      - "8080:8080"
+    container_name: cs-techpinoy-net
+```
+
+Start with:
+```sh
+docker-compose up -d
+```
+
+### NGINX Reverse Proxy (Example)
+
+```
+server {
+    listen 80;
+    server_name cs.techpinoy.net;
+
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+### SSL (Certbot)
+
+```
+sudo apt install certbot python3-certbot-nginx -y
+sudo certbot --nginx -d cs.techpinoy.net
+```
+
+### Domain Setup
+
+- Add an A record for `cs.techpinoy.net` pointing to your server's public IP in your DNS provider's dashboard.
+
+---
+
+## Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+## License
+
+[MIT](LICENSE) (or specify your license here)
+
+---
+
+## Notes
+
+- This project was originally scaffolded with Lovable, but is now maintained at [https://github.com/an1noX/cs-techpinoy-net](https://github.com/an1noX/cs-techpinoy-net).
+- For legacy Lovable deployment, see the Lovable dashboard.
