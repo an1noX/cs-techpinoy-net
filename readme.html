@@ -46,47 +46,49 @@
 </div>
 
 <div id="overview" class="tab-content active">
-  <p>This guide provides ways to deploy the CS TechPinoy Net web app using Node.js, Docker, or Docker Compose. For advanced users, HLDS game server deployment is also included.</p>
+  <p>This guide provides ways to deploy the CS TechPinoy Net web app using Node.js, Docker, or Docker Compose. <b>Note:</b> The Vite dev server and preview run on <b>8080</b> (development), but Docker/production uses <b>8083</b> as configured in the Dockerfile and docker-compose.yml. For advanced users, HLDS game server deployment is also included.</p>
 </div>
 
 <div id="run" class="tab-content">
   <h2>Deployment Options Summary</h2>
   <ol>
-    <li><strong>Local Development</strong>
+    <li><strong>Local Development (Vite Dev Server)</strong>
       <pre>
 git clone https://github.com/an1noX/cs-techpinoy-net.git
 cd cs-techpinoy-net
 npm install
 npm run dev
-# App runs at http://localhost:8080
+# App runs at http://localhost:8080 (development only)
       </pre>
     </li>
-    <li><strong>Production Build & Preview</strong>
+    <li><strong>Production Build & Preview (Local Only)</strong>
       <pre>
 npm run build
 npm run preview
-# Preview at http://localhost:8080
+# Preview at http://localhost:8080 (local preview only)
       </pre>
     </li>
-    <li><strong>Docker (Local)</strong>
+    <li><strong>Docker (Production)</strong>
       <pre>
 docker build -t cs-techpinoy-net .
-docker run -d -p 8080:8080 --name cs-techpinoy-net cs-techpinoy-net
+docker run -d -p 8083:8083 --name cs-techpinoy-net cs-techpinoy-net
+# The app will be available at http://localhost:8083
       </pre>
     </li>
-    <li><strong>Docker Compose (Local)</strong>
+    <li><strong>Docker Compose (Production, using Docker Hub image)</strong>
       <pre>
 version: "3.8"
 services:
   cs-techpinoy-net:
-    build: .
+    image: jnonymous420/cs-techpinoy-net:latest
     ports:
-      - "8080:8080"
+      - "8083:8083"
     container_name: cs-techpinoy-net
       </pre>
       <pre>docker-compose up -d</pre>
     </li>
   </ol>
+  <p><b>Note:</b> All production deployments (Docker, Compose, NGINX) use port <b>8083</b>.</p>
 </div>
 
 <div id="install" class="tab-content">
@@ -102,25 +104,36 @@ sudo apt install nginx -y</pre>
 <div id="docker" class="tab-content">
   <h2>Build Docker Image</h2>
   <pre>docker build -t cs-techpinoy-net .</pre>
+
+  <h2>Tag & Push to Docker Hub</h2>
+  <pre>
+# Tag your image
+docker tag cs-techpinoy-net jnonymous420/cs-techpinoy-net:latest
+# Login to Docker Hub
+docker login
+# Push the image
+docker push jnonymous420/cs-techpinoy-net:latest
+  </pre>
 </div>
 
 <div id="local" class="tab-content">
   <h2>Run Docker Image Locally</h2>
   <pre>
 docker build -t cs-techpinoy-net .
-docker run -d -p 8080:8080 --name cs-techpinoy-net cs-techpinoy-net
+docker run -d -p 8083:8083 --name cs-techpinoy-net cs-techpinoy-net
+# The app will be available at http://localhost:8083
   </pre>
 </div>
 
 <div id="compose" class="tab-content">
-  <h2>Docker Compose (Build Locally)</h2>
+  <h2>Docker Compose (Production, using Docker Hub image)</h2>
   <pre>
 version: "3.8"
 services:
   cs-techpinoy-net:
-    build: .
+    image: jnonymous420/cs-techpinoy-net:latest
     ports:
-      - "8080:8080"
+      - "8083:8083"
     container_name: cs-techpinoy-net
   </pre>
   <h3>Start</h3>
@@ -156,7 +169,7 @@ server {
     server_name cs.techpinoy.net;
 
     location / {
-        proxy_pass http://localhost:8080;
+        proxy_pass http://localhost:8083;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

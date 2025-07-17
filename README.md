@@ -15,7 +15,6 @@ A modern web portal for Counter-Strike 1.3 servers and community, featuring live
 ### 1. Clone the Repository
 
 ```sh
-# Clone the repository
 git clone https://github.com/an1noX/cs-techpinoy-net.git
 cd cs-techpinoy-net
 ```
@@ -30,9 +29,9 @@ npm install
 
 ### 3. Available Scripts
 
-- `npm run dev` – Start the development server (Vite, hot reload)
+- `npm run dev` – Start the development server (Vite, hot reload, runs on port 8080)
 - `npm run build` – Build for production
-- `npm run preview` – Preview the production build locally
+- `npm run preview` – Preview the production build locally (default: 8080)
 - `npm run lint` – Lint the codebase
 
 ### 4. Start Development Server
@@ -41,7 +40,7 @@ npm install
 npm run dev
 ```
 
-The app will be available at [http://localhost:8080](http://localhost:8080) by default.
+The app will be available at [http://localhost:8080](http://localhost:8080) by default (development only).
 
 ---
 
@@ -87,24 +86,37 @@ cs-techpinoy-net/
 ```sh
 npm run build
 npm run preview
+# By default, preview runs on port 8080
 ```
 
 ### Docker (Local)
 
 ```sh
 docker build -t cs-techpinoy-net .
-docker run -d -p 8080:8080 --name cs-techpinoy-net cs-techpinoy-net
+docker run -d -p 8083:8083 --name cs-techpinoy-net cs-techpinoy-net
+# The app will be available at http://localhost:8083
 ```
 
-### Docker Compose (Local)
+### Tag & Push to Docker Hub
+
+```sh
+# Tag your image
+docker tag cs-techpinoy-net jnonymous420/cs-techpinoy-net:latest
+# Login to Docker Hub
+docker login
+# Push the image
+docker push jnonymous420/cs-techpinoy-net:latest
+```
+
+### Docker Compose (Local or Server)
 
 ```yaml
 version: "3.8"
 services:
   cs-techpinoy-net:
-    build: .
+    image: jnonymous420/cs-techpinoy-net:latest
     ports:
-      - "8080:8080"
+      - "8083:8083"
     container_name: cs-techpinoy-net
 ```
 
@@ -121,7 +133,7 @@ server {
     server_name cs.techpinoy.net;
 
     location / {
-        proxy_pass http://localhost:8080;
+        proxy_pass http://localhost:8083;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
