@@ -1,5 +1,5 @@
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
 
 type DownloadModalProps = {
   onPlayNow?: () => void;
@@ -16,27 +16,32 @@ const checkFileExists = async (url: string) => {
   }
 };
 
-const DownloadModal: React.FC<DownloadModalProps> = ({ onPlayNow, handleDownload, visible = true }) => {
+function DownloadModal({ onPlayNow, handleDownload, visible = true }: DownloadModalProps) {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [downloading, setDownloading] = useState(false);
+  const [availableFiles, setAvailableFiles] = useState<{zip: boolean, exe: boolean}>({zip: false, exe: false});
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    if (!checked && visible) {
+      setDownloading(true);
+      Promise.all([
+        checkFileExists("/downloads/csfull_setup.zip"),
+        checkFileExists("/downloads/csfull_setup.exe")
+      ]).then(([zip, exe]) => {
+        setAvailableFiles({zip, exe});
+        setDownloading(false);
+        setChecked(true);
+      });
+    }
+  }, [checked, visible]);
 
   if (!visible) return null;
 
-  const handleDownloadClick = async () => {
-    setDownloading(true);
-    // Check for .zip first, then .exe
-    const zipUrl = "/downloads/csfull_setup.zip";
-    const exeUrl = "/downloads/csfull_setup.exe";
-    let url = null;
-    if (await checkFileExists(zipUrl)) {
-      url = zipUrl;
-    } else if (await checkFileExists(exeUrl)) {
-      url = exeUrl;
-    }
+  const handleDownloadChoice = (url: string) => {
     setDownloadUrl(url);
     setShowPasswordModal(true);
-    setDownloading(false);
     if (handleDownload) handleDownload();
   };
 
@@ -68,13 +73,34 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ onPlayNow, handleDownload
         &gt; Old School Games. New School Gamers. &lt;
       </p>
       <div className="flex gap-4 justify-center flex-col sm:flex-row">
-        <Button
-          onClick={handleDownloadClick}
-          className="inline-block bg-orange-600 hover:bg-orange-500 text-black font-mono px-8 py-3 border border-orange-400 transition-all hover:shadow-lg hover:shadow-orange-400/30 rounded-md text-sm font-medium"
-          disabled={downloading}
-        >
-          {downloading ? 'Checking...' : '[DOWNLOAD_NOW]'}
-        </Button>
+        {downloading && (
+          <Button disabled className="bg-orange-600 text-black font-mono px-8 py-3 border border-orange-400 rounded-md text-sm font-medium">
+            Checking files...
+          </Button>
+        )}
+        {!downloading && (availableFiles.zip || availableFiles.exe) ? (
+          <>
+            {availableFiles.zip && (
+              <Button
+                onClick={() => handleDownloadChoice("/downloads/csfull_setup.zip")}
+                className="bg-orange-600 hover:bg-orange-500 text-black font-mono px-8 py-3 border border-orange-400 rounded-md text-sm font-medium"
+              >
+                Download ZIP
+              </Button>
+            )}
+            {availableFiles.exe && (
+              <Button
+                onClick={() => handleDownloadChoice("/downloads/csfull_setup.exe")}
+                className="bg-orange-600 hover:bg-orange-500 text-black font-mono px-8 py-3 border border-orange-400 rounded-md text-sm font-medium"
+              >
+                Download EXE
+              </Button>
+            )}
+          </>
+        ) : null}
+        {!downloading && !availableFiles.zip && !availableFiles.exe && (
+          <div className="text-red-500 font-mono text-sm">No download files available.</div>
+        )}
         <Button 
           onClick={onPlayNow}
           variant="outline" 
@@ -112,14 +138,11 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ onPlayNow, handleDownload
             >
               Cancel
             </Button>
-            {!downloadUrl && (
-              <div className="mt-4 text-red-500 font-mono text-xs">Download file not found. Please try again later.</div>
-            )}
           </div>
         </div>
       )}
     </div>
   );
-};
+}
 
 export default DownloadModal; 

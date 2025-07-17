@@ -14,13 +14,6 @@ const Hero = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleDownload = () => {
-    toast({
-      title: "Download Started",
-      description: "Counter-Strike 1.3 Full Install is downloading...",
-    });
-  };
-
   const handlePlayNow = () => {
     scrollToSection('manual');
   };
@@ -60,7 +53,6 @@ const Hero = () => {
       <DownloadModal 
         visible={showHeroContent} 
         onPlayNow={handlePlayNow} 
-        handleDownload={handleDownload} 
       />
 
       {/* TopPlayer Modal */}

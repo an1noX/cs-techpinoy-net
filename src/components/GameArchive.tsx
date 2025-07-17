@@ -3,21 +3,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
 
 const GameArchive = () => {
-  const handleDownload = (itemTitle: string, size: string) => {
-    toast({
-      title: "Download Started",
-      description: `${itemTitle} (${size}) is downloading...`,
-    });
-  };
-
-  const handleUnavailable = (itemTitle: string) => {
-    toast({
-      title: "File Unavailable",
-      description: `${itemTitle} is currently unavailable for download.`,
-      variant: "destructive"
-    });
-  };
-
   const archiveItems = [
     {
       title: "FULL_INSTALL_V1.3",
@@ -89,8 +74,8 @@ const GameArchive = () => {
                     </a>
                   ) : (
                     <Button 
-                      onClick={() => handleUnavailable(item.title)}
-                      className="bg-orange-600 hover:bg-orange-500 text-black font-mono text-xs px-4 py-2 ml-4 border border-orange-400 transition-all hover:shadow-md hover:shadow-orange-400/30"
+                      disabled
+                      className="bg-orange-600 hover:bg-orange-500 text-black font-mono text-xs px-4 py-2 ml-4 border border-orange-400 transition-all hover:shadow-md hover:shadow-orange-400/30 opacity-50 cursor-not-allowed"
                     >
                       {item.type}
                     </Button>
